@@ -1,10 +1,15 @@
 var LRUcache = require("./LRU");
 
 var FibWithCache = function (maxsize) {
-	var cache = new LRUcache(maxsize);
-
+	var cache = new LRUcache(maxsize, {
+		dontPrintList: false
+	});
 
 	this.getNthFib = function (n, useCache) {
+		if (typeof useCache == "undefined") {
+			useCache = true;
+		}
+
 		if (n < 0) {
 			throw new Error("Can't pass in negative number into fib function.");
 		}
@@ -19,7 +24,7 @@ var FibWithCache = function (maxsize) {
 			return 1;
 		}
 
-		return this.getNthFib(n - 1, true) + this.getNthFib(n - 2, true);
+		return this.getNthFib(n - 1) + this.getNthFib(n - 2);
 	};
 
 	this.printStats = function () {
@@ -42,8 +47,12 @@ var FibWithoutCache = function () {
 
 
 try {
-	var cachedFib = new FibWithCache(10);
-	console.log(cachedFib.getNthFib(30, true));
+	var timeStart = new Date();
+	var cachedFib = new FibWithCache(5);
+	console.log(cachedFib.getNthFib(100));
+	var timeStop = new Date();
+	
+	console.log("It took " + ( timeStop.getTime() - timeStart.getTime() ) + "ms to finish running cached fib ");
 	cachedFib.printStats();
 	
 	var uncachedFib = new FibWithoutCache();

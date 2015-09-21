@@ -13,6 +13,7 @@ var LRU = function (maxSize, options) {
 	this.currentSize = 0;
 	this.hits = 0;
 	this.misses = 0;
+	this.removes = 0;
 
 	this.get = function (key, fn) {
 		var node = this.hashMap[key];
@@ -26,24 +27,25 @@ var LRU = function (maxSize, options) {
 			// key doesn't exist in hash map need to add it, check if we need to remove the last one to create space
 		this.misses += 1;
 
-		if (this.currentSize > 10) {
+		var value = fn();
+		var newNode = this.list.unshift(value, key);
+		this.hashMap[key] = newNode;
+		this.currentSize += 1;
+
+		if (this.currentSize > this.maxSize) {
+			this.removes++;
 			var removedNode = this.list.pop();
 			delete this.hashMap[removedNode.getKey()];
 			this.currentSize -= 1;
 		}
-
-		var value = fn();
-		console.log(value);
-		var newNode = this.list.unshift(value, key);
-		this.hashMap[key] = newNode;
-		this.currentSize += 1;
-		console.log(this.currentSize);
+		
 		return newNode.getValue();
 	};
 
 	this.printStats = function () {	
 		console.log("There were " + this.hits + " number of hits on the cache");
 		console.log("There were " + this.misses + " number of misses on the cache");
+		console.log("There were " + this.removes + " number of removes performed on the cache");
 	};
 };
 
