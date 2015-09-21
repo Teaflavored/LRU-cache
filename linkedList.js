@@ -38,40 +38,60 @@ var List = function (options) {
 		return this.length;
 	}
 
-	this.push = function (value) {
-		this.end.insertBefore(new Node(value));
-		this.length += 1;
+	this.print = function () {
+		printList.call(this);
+	};
 
-		console.log("pushing " + value + " onto list.");
+	this.push = function (valueOrNode, key) {
+		var pushedNode;
+
+		if (typeof valueOrNode == "object") {
+			pushedNode = valueOrNode;
+			!options.dontPrintList && console.log("pushing " + valueOrNode.getValue() + " onto list.");
+			this.end.insertBefore(valueOrNode);	
+		} else {
+			!options.dontPrintList && console.log("pushing " + valueOrNode + " onto list.");
+			pushedNode = new Node(valueOrNode, key);
+			this.end.insertBefore(pushedNode);
+		}
+
+		this.length += 1;
 		printList.call(this);
 
-		return this;
+		return pushedNode;
 	};
 
 	this.pop = function () {
 		var removedNode = this.end.prev.remove();	
 		this.length -= 1;
 
-		console.log("popping " + removedNode.getValue() + " from the list.");
+		!options.dontPrintList && console.log("popping " + removedNode.getValue() + " from the list.");
 		printList.call(this);
 		return removedNode;
 	};
 
-	this.unshift = function (value) {
-		this.start.insertAfter(new Node(value));
-		this.length += 1;
-		
-		console.log("unshifting " + value + " to the list.");
-		printList.call(this);
+	this.unshift = function (valueOrNode, key) {
+		var unshiftedNode;
 
-		return this;
+		if (typeof valueOrNode == "object") {
+			unshiftedNode = valueOrNode;
+			!options.dontPrintList && console.log("unshifting " + valueOrNode.getValue() + " to the list.");
+			this.start.insertAfter(valueOrNode);	
+		} else {
+			unshiftedNode = new Node(valueOrNode, key);
+			!options.dontPrintList && console.log("unshifting " + valueOrNode + " to the list.");
+			this.start.insertAfter(unshiftedNode);
+		}
+		this.length += 1;
+
+		return unshiftedNode; 
 	};
 
 	this.shift = function () {
 		var removedNode = this.start.next.remove();	
 		this.length -= 1;
 
-		console.log("shifting " + removedNode.getValue() + " from the list.");
+		!options.dontPrintList && console.log("shifting " + removedNode.getValue() + " from the list.");
 		printList.call(this);
 
 		return removedNode;

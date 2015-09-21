@@ -1,11 +1,14 @@
-var Node = function (value) {
-	this.value = value;
+var Node = function (value, key) {
 	this.next = null;
 	this.prev = null;
-};
 
-Node.prototype.getValue = function () {
-	return this.value;
+	this.getValue = function () {
+		return value;	
+	};
+
+	this.getKey = function () {
+		return key;
+	};
 };
 
 Node.prototype.insertBefore = function (node) {
@@ -37,6 +40,8 @@ Node.prototype.insertAfter= function (node) {
 Node.prototype.remove = function () {
 	this.prev.next = this.next;
 	this.next.prev = this.prev;
+	this.prev = null;
+	this.next = null;
 
 	return this;
 };
